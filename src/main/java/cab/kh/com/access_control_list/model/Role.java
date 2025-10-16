@@ -1,0 +1,28 @@
+package cab.kh.com.access_control_list.model;
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+@Entity @Table(name="role")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Role {
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique=true, nullable=false)
+    private String name; // e.g. SUPER_ADMIN, ADMIN, STAFF
+
+    private String description;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="role_permission",
+            joinColumns=@JoinColumn(name="role_id"),
+            inverseJoinColumns=@JoinColumn(name="permission_id"))
+    private Set<Permission> permissions = new HashSet<>();
+}
