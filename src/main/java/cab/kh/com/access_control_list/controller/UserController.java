@@ -21,6 +21,7 @@ public class UserController {
     private final UserService userService;
     private final UserRepo userRepo;
 
+
     @PostMapping
     public User create(@Valid @RequestBody CreateUserReq req) {
         return userService.createUser(req.getUsername(), req.getPassword(), req.getEmail());
@@ -33,6 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}/permissions")
     public Map<String, Object> permissions(@PathVariable Long id) {
+        System.out.println("Get permissions for user " + id);
         var u = userRepo.findById(id).orElseThrow();
         Map<String, Object> res = new LinkedHashMap<>();
         res.put("username", u.getUsername());
@@ -43,6 +45,8 @@ public class UserController {
 
     @GetMapping
     public List<User> all() {
-        return userRepo.findAll();
+        System.out.println("List all users");
+        return
+                userRepo.findAll();
     }
 }

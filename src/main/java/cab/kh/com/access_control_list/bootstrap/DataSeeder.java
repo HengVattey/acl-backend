@@ -26,9 +26,8 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
-            System.out.println("🚀 Starting DataSeeder...");
 
-            // 1️⃣ Ensure base permissions exist
+
             List<String> perms = List.of("READ", "WRITE", "SHARE", "DELETE", "MANAGE");
             for (String p : perms) {
                 permRepo.findByName(p).orElseGet(() ->
@@ -39,30 +38,29 @@ public class DataSeeder implements CommandLineRunner {
                 );
             }
 
-            // 2️⃣ Get all permissions from DB
+
             List<Permission> allPerms = permRepo.findAll();
 
-            // 3️⃣ Ensure SUPER_ADMIN role exists
             Role superRole = roleRepo.findByName("SUPER_ADMIN").orElse(null);
 
             if (superRole == null) {
                 superRole = Role.builder()
                         .name("SUPER_ADMIN")
                         .description("Super admin role")
-                        .permissions(new HashSet<>(allPerms)) // ✅ prevent null
+                        .permissions(new HashSet<>(allPerms))
                         .build();
 
                 roleRepo.save(superRole);
-                System.out.println("✅ SUPER_ADMIN role created.");
+                System.out.println(" SUPER_ADMIN role created.");
             } else {
                 if (superRole.getPermissions() == null) {
                     superRole.setPermissions(new HashSet<>(allPerms));
                 }
 
-                // ✅ Make variable effectively final for lambda use
+
                 final Role existingRole = superRole;
 
-                // ✅ Add only missing permissions to avoid duplicates
+
                 allPerms.stream()
                         .filter(p -> !existingRole.getPermissions().contains(p))
                         .forEach(p -> existingRole.getPermissions().add(p));
@@ -70,24 +68,24 @@ public class DataSeeder implements CommandLineRunner {
                 roleRepo.save(existingRole);
             }
 
-            // 4️⃣ Ensure superadmin user exists
+
             if (userRepo.findByUsername("superadmin").isEmpty()) {
                 User u = User.builder()
                         .username("superadmin")
-                        .password(pe.encode("Admin@123")) // default password
+                        .password(pe.encode("Admin@123"))
                         .email("superadmin@example.com")
                         .enabled(true)
-                        .roles(new HashSet<>()) // ✅ match Set<Role> in entity
+                        .roles(new HashSet<>())
                         .build();
 
                 u.getRoles().add(superRole);
                 userRepo.save(u);
-                System.out.println("✅ Superadmin user created (username: superadmin, password: Admin@123)");
+                System.out.println(" Superadmin user created (username: superadmin, password: Admin@123)");
             }
 
-            System.out.println("🎉 DataSeeder completed successfully.");
+            System.out.println(" DataSeeder completed successfully.");
         } catch (Exception e) {
-            System.err.println("❌ DataSeeder failed: " + e.getMessage());
+            System.err.println(" DataSeeder failed: " + e.getMessage());
             e.printStackTrace();
         }
     }

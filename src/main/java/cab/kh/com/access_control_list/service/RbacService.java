@@ -8,11 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+//RBAC= Role-Based Access Control
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class RbacService {
-    private final RoleRepo roleRepo; private final PermissionRepo permRepo;
+    private final RoleRepo roleRepo;
+    private final PermissionRepo permRepo;
 
     public Role createRole(String name, String desc){
         return roleRepo.save(Role.builder().name(name).description(desc).build());
@@ -27,7 +31,9 @@ public class RbacService {
     }
 
     public Role grantPermission(Long roleId, Long permId){
-        Role r = roleRepo.findById(roleId).orElseThrow(); Permission p = permRepo.findById(permId).orElseThrow();
-        r.getPermissions().add(p); return r;
+        Role r = roleRepo.findById(roleId).orElseThrow();
+        Permission p = permRepo.findById(permId).orElseThrow();
+        r.getPermissions().add(p);
+        return r;
     }
 }

@@ -22,12 +22,10 @@ public class PermissionController {
     public Permission create(@RequestBody Map<String, String> body) {
         return rbac.createPermission(body.get("name"), body.getOrDefault("description", ""));
     }
-
     @PostMapping("/grant")
     public Role grant(@RequestBody GrantPermissionReq req) {
         return rbac.grantPermission(req.getRoleId(), req.getPermissionId());
     }
-
     @GetMapping
     public List<Permission> all() {
         return permRepo.findAll();

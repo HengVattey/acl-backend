@@ -3,7 +3,6 @@ package cab.kh.com.access_control_list.configuration;
 // package com.example.acl.security
 import cab.kh.com.access_control_list.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,8 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
-
-@EnableWebSecurity @Configuration @RequiredArgsConstructor
+@EnableWebSecurity
+@Configuration
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomUserDetailsService uds;
@@ -37,9 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    @Override public AuthenticationManager authenticationManagerBean() throws Exception { return super.authenticationManagerBean(); }
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception { return super.authenticationManagerBean(); }
 
-    @Override protected void configure(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http.cors().configurationSource(req -> {
                     var c = new CorsConfiguration();
                     c.setAllowedOrigins(List.of(System.getProperty("app.cors.allowed-origins","http://localhost:4200")));
