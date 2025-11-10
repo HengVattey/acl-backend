@@ -1,9 +1,14 @@
 package cab.kh.com.access_control_list.dto;
 
+import cab.kh.com.access_control_list.model.Permission;
+import cab.kh.com.access_control_list.model.Role;
 import lombok.Data;
-import org.hibernate.validator.constraints.Email;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class CreateUserReq {
@@ -11,6 +16,20 @@ public class CreateUserReq {
     private String password;
     private String email;
     private boolean enabled;
+    private Long roleId;
+
+
 //    private List<String> roleNames;       // existing roles
 //    private List<String> permissionNames;
+
+
+//    private String username;
+//
+//    private String password;
+//
+//    private String email;
+//    private Long roleId;
+
+
+
 }

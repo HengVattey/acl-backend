@@ -4,6 +4,7 @@ import jdk.jfr.Description;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "permissions")
@@ -14,7 +15,8 @@ import javax.persistence.*;
 @Builder
 
 public class Permission {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)

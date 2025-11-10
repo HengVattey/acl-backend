@@ -1,18 +1,23 @@
 package cab.kh.com.access_control_list.controller;
-
 import cab.kh.com.access_control_list.dto.AssignRoleReq;
 import cab.kh.com.access_control_list.dto.CreateUserReq;
+import cab.kh.com.access_control_list.dto.ResetPasswordReq;
+import cab.kh.com.access_control_list.dto.UserInfoResponse;
 import cab.kh.com.access_control_list.model.Role;
 import cab.kh.com.access_control_list.model.User;
 import cab.kh.com.access_control_list.repository.UserRepo;
 import cab.kh.com.access_control_list.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -20,18 +25,42 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserRepo userRepo;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
-
+    //To create new user
     @PostMapping
     public User create(@Valid @RequestBody CreateUserReq req) {
-        return userService.createUser(req.getUsername(), req.getPassword(), req.getEmail());
+       User user=userService.createUser(req.getUsername(), req.getPassword(),req.getEmail());
+        return  user;
     }
 
+    //To allow super can reset password for user
+    @PutMapping("/{id}/reset-password")
+    public String resetPassword(@PathVariable Long id, @RequestBody ResetPasswordReq req) {
+        User u = userRepo.findById(id).orElseThrow();
+        u.setPassword(bCryptPasswordEncoder.encode(req.getNewPassword()));
+        userRepo.save(u);
+        return "Password reset successfully";
+    }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUserInfo(Authentication authentication) {
+        var user = userRepo.findByUsername(authentication.getName()).orElseThrow();
+        Set<String> roles = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(new UserInfoResponse(user.getUsername(), roles));
+    }
+
+    //To assign role to user
     @PostMapping("/assign-role")
     public User assignRole(@Valid @RequestBody AssignRoleReq req) {
         return userService.assignRole(req.getUserId(), req.getRoleId());
     }
 
+    //To grant permissions to role
     @GetMapping("/{id}/permissions")
     public Map<String, Object> permissions(@PathVariable Long id) {
         System.out.println("Get permissions for user " + id);
@@ -46,7 +75,18 @@ public class UserController {
     @GetMapping
     public List<User> all() {
         System.out.println("List all users");
-        return
-                userRepo.findAll();
+        return userRepo.findAll();
     }
+
+    @PutMapping("/{id}")
+    public User update(@PathVariable Long id, @Valid @RequestBody CreateUserReq req) {
+        User u = userRepo.findById(id).orElseThrow();
+        u.setUsername(req.getUsername());
+        u.setPassword(req.getPassword());
+        u.setEmail(req.getEmail());
+        u.setEnabled(req.isEnabled());
+        return userRepo.save(u);
+    }
+
+
 }
