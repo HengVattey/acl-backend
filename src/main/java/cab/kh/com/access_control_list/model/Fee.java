@@ -16,7 +16,7 @@ public class Fee {
     @Column(name = "id")
     private  Integer id;
 
-    @Column(name = "fee_name")
+    @Column(name = "fee_name", unique = true, nullable = false)
     @NotBlank
     private  String feeName;
 

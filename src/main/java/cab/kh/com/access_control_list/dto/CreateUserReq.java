@@ -16,6 +16,7 @@ public class CreateUserReq {
     private String password;
     private String email;
     private boolean enabled;
+    private String phoneNumber;
     private Long roleId;
 
 

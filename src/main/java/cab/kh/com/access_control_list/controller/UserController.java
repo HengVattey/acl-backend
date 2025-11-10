@@ -6,6 +6,7 @@ import cab.kh.com.access_control_list.dto.UserInfoResponse;
 import cab.kh.com.access_control_list.model.Role;
 import cab.kh.com.access_control_list.model.User;
 import cab.kh.com.access_control_list.repository.UserRepo;
+import cab.kh.com.access_control_list.service.SmsService;
 import cab.kh.com.access_control_list.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,14 @@ public class UserController {
     private final UserService userService;
     private final UserRepo userRepo;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private  final SmsService smsService;
 
     //To create new user
     @PostMapping
     public User create(@Valid @RequestBody CreateUserReq req) {
+        this.smsService.sendSms("cab_sms@mekongnet","a6f82e0bb188214b5ce84c1dd713fe53",
+                "CAB", "username= " +req.getUsername()+ ", password = " +req.getPassword(),req.getPhoneNumber(),"0",
+                "From Cab");
        User user=userService.createUser(req.getUsername(), req.getPassword(),req.getEmail());
         return  user;
     }
@@ -38,6 +43,7 @@ public class UserController {
     @PutMapping("/{id}/reset-password")
     public String resetPassword(@PathVariable Long id, @RequestBody ResetPasswordReq req) {
         User u = userRepo.findById(id).orElseThrow();
+
         u.setPassword(bCryptPasswordEncoder.encode(req.getNewPassword()));
         userRepo.save(u);
         return "Password reset successfully";

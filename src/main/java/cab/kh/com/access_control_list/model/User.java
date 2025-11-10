@@ -11,11 +11,13 @@ public class User {
 
     @Column(unique=true, nullable=false)
     private String username;
-    @Column(nullable=false)
+    @Column(unique = true, nullable=false)
     private String password;
-    @Column(unique=true)
+    @Column(unique=true) // Can null
     private String email;
     private boolean enabled = true;
+    @Column(unique = true)
+    private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="user_role",
