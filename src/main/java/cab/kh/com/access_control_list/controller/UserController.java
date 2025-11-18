@@ -32,11 +32,17 @@ public class UserController {
     //To create new user
     @PostMapping
     public User create(@Valid @RequestBody CreateUserReq req) {
-        this.smsService.sendSms("cab_sms@mekongnet","a6f82e0bb188214b5ce84c1dd713fe53",
-                "CAB", "username= " +req.getUsername()+ ", password = " +req.getPassword(),req.getPhoneNumber(),"0",
-                "From Cab");
-       User user=userService.createUser(req.getUsername(), req.getPassword(),req.getEmail());
-        return  user;
+//        this.smsService.sendSms("cab_sms@mekongnet","a6f82e0bb188214b5ce84c1dd713fe53",
+//                "CAB", "username= " +req.getUsername()+ ", password = " +req.getPassword(),req.getPhoneNumber(),"0",
+//                "From Cab");
+       User user=userService.createUser(req.getUsername(), req.getPassword(),req.getEmail(),req.getPhoneNumber());
+        System.out.println("User is created Id="+user.getId()+"user="+req.getUsername());
+
+        //req.setRoleId(req.getRoleId());
+      //  System.out.println("Role Id"+req.getRoleId());
+
+        //System.out.println(this.userService.assignRole(user.getId(), req.getRoleId())) ;
+        return  userService.assignRole(user.getId(), req.getRoleId());
     }
 
     //To allow super can reset password for user
@@ -48,6 +54,12 @@ public class UserController {
         userRepo.save(u);
         return "Password reset successfully";
     }
+    //To assign role to user
+    @PostMapping("/assign-role")
+    public User assignRole(@Valid @RequestBody AssignRoleReq req) {
+        return userService.assignRole(req.getUserId(), req.getRoleId());
+    }
+
 
 
     @GetMapping("/me")
@@ -60,11 +72,7 @@ public class UserController {
         return ResponseEntity.ok(new UserInfoResponse(user.getUsername(), roles));
     }
 
-    //To assign role to user
-    @PostMapping("/assign-role")
-    public User assignRole(@Valid @RequestBody AssignRoleReq req) {
-        return userService.assignRole(req.getUserId(), req.getRoleId());
-    }
+
 
     //To grant permissions to role
     @GetMapping("/{id}/permissions")

@@ -4,15 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class AssignRoleReq {
-    @NotNull
-    private Long userId;
-    @NotNull
+@AllArgsConstructor
+@NoArgsConstructor
+public class RoleVm {
     private Long roleId;
-
+    private String roleName;
 }

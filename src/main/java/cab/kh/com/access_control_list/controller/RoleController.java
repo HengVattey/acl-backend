@@ -1,4 +1,5 @@
 package cab.kh.com.access_control_list.controller;
+import cab.kh.com.access_control_list.dto.RoleVm;
 import cab.kh.com.access_control_list.model.Role;
 import cab.kh.com.access_control_list.repository.RoleRepo;
 import cab.kh.com.access_control_list.service.RbacService;
@@ -6,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/roles")
@@ -21,4 +23,25 @@ public class RoleController {
     public List<Role> all() {
         return roleRepo.findAll();
     }
+
+
+//    @GetMapping("/allRoles")
+//    public List<Role> getAllRoles(){
+//        return roleRepo.findAll();
+//    }
+@GetMapping("/allRoles")
+public List<RoleVm> getALLRoles() {
+
+    return roleRepo.findAll()
+            .stream()
+            .map(role -> new RoleVm(
+                    role.getId(),
+                    role.getName()
+            ))
+            .collect(Collectors.toList());
+}
+
+
+
+
 }

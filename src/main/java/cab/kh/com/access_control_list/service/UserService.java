@@ -30,17 +30,46 @@ public class UserService {
 //        this.pe = pe;
 //    }
 
-    public User createUser(String username, String rawPwd, String email){
+    public User createUser(String username, String rawPwd, String email, String phoneNumber) {
         if (userRepo.findByUsername(username).isPresent()) throw new IllegalArgumentException("username exists");
-       User u = User.builder().username(username).password(pe.encode(rawPwd)).email(email).enabled(true).build();
+       User u = User.builder().username(username).password(pe.encode(rawPwd)).email(email).enabled(true).phoneNumber(phoneNumber).build();
 //      User u=  User.builder().username(username).password((rawPwd)).email(email).enabled(true).build();
         return userRepo.save(u);
     }
-    public User assignRole(Long userId, Long roleId){
-        User u = userRepo.findById(userId).orElseThrow();
-        Role r = roleRepo.findById(roleId).orElseThrow();
-        u.getRoles().add(r); return u;
+//    public User assignRole(Long userId, Long roleId){
+//        User u = userRepo.findById(userId).orElseThrow();
+//        Role r = roleRepo.findById(roleId).orElseThrow();
+//        u.getRoles().add(r);
+//        return u;
+//    }
+
+    @Transactional
+    public User assignRole(Long userId, Long roleId) {
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id = " + userId));
+
+        Role role = roleRepo.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found with id = " + roleId));
+
+        // ensure roles set exists
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
+
+        user.getRoles().add(role);
+
+        // SAVE TO DB! (missing before)
+        return userRepo.save(user);
     }
+
+
+
+
+//    public  superAdminAssignRole(Long userId, Long roleId){
+//        Role r
+//    }
+
     public Map<String,Boolean> effectivePermissions(Long userId){
         User u = userRepo.findById(userId).orElseThrow();
         Set<String> names = new HashSet<>();

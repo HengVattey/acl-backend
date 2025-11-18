@@ -6,7 +6,8 @@ import java.util.*;
 @Entity @Table(name="users")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique=true, nullable=false)
@@ -16,7 +17,7 @@ public class User {
     @Column(unique=true) // Can null
     private String email;
     private boolean enabled = true;
-    @Column(unique = true)
+    @Column(unique = true,nullable = true)
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -24,15 +25,6 @@ public class User {
             joinColumns=@JoinColumn(name="user_id"),
             inverseJoinColumns=@JoinColumn(name="role_id"))
     private Set<Role> roles = new HashSet<>();
-
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_permission",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private Set<Permission> permissions = new HashSet<>();
 
 
 }

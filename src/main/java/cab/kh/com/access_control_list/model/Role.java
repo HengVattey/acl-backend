@@ -17,7 +17,6 @@ public class Role {
 
     @Column(unique=true, nullable=false)
     private String name; // e.g. SUPER_ADMIN, ADMIN, STAFF
-
     private String description;
 
     @ManyToMany(fetch = FetchType.EAGER)
