@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").hasAuthority("MANAGE")           // create user
                 .antMatchers(HttpMethod.GET, "/users/**").hasAuthority("MANAGE")
-                .antMatchers("/roles/**","/permissions/**").hasAuthority("MANAGE")       // RBAC management
+                .antMatchers("/roles/**","/permissions/**", "/api/v1/fees/**").hasAuthority("MANAGE")       // RBAC management
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

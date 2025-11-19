@@ -30,7 +30,6 @@ public class AuthController {
             
             // 3) Generate token with ROLES included
             String token = jwt.generateToken(user);
-
             return ResponseEntity.ok(new TokenResponse(token));
 
         } catch (AuthenticationException ex) {
