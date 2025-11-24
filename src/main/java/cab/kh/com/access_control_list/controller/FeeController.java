@@ -17,7 +17,8 @@ public class FeeController {
 
 @PostMapping
 public Fee createFee(@Valid @RequestBody Fee req){
-    return feeService.createFee(req);
+    System.out.println( "FEE"  +req.toString());
+        return feeService.createFee(req);
 }
 
 @GetMapping

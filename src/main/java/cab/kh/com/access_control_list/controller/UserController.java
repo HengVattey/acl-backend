@@ -1,14 +1,12 @@
 package cab.kh.com.access_control_list.controller;
-import cab.kh.com.access_control_list.dto.AssignRoleReq;
-import cab.kh.com.access_control_list.dto.CreateUserReq;
-import cab.kh.com.access_control_list.dto.ResetPasswordReq;
-import cab.kh.com.access_control_list.dto.UserInfoResponse;
+import cab.kh.com.access_control_list.dto.*;
 import cab.kh.com.access_control_list.model.Role;
 import cab.kh.com.access_control_list.model.User;
 import cab.kh.com.access_control_list.repository.UserRepo;
 import cab.kh.com.access_control_list.service.SmsService;
 import cab.kh.com.access_control_list.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -92,15 +91,24 @@ public class UserController {
         return userRepo.findAll();
     }
 
+//    @PutMapping("/{id}")
+//    public User update(@PathVariable Long id, @Valid @RequestBody CreateUserReq req) {
+//        User u = userRepo.findById(id).orElseThrow();
+//        u.setUsername(req.getUsername());
+//        u.setPassword(req.getPassword());
+//        u.setEmail(req.getEmail());
+//        u.setEnabled(req.isEnabled());
+//        return userRepo.save(u);
+//    }
+
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @Valid @RequestBody CreateUserReq req) {
-        User u = userRepo.findById(id).orElseThrow();
-        u.setUsername(req.getUsername());
-        u.setPassword(req.getPassword());
-        u.setEmail(req.getEmail());
-        u.setEnabled(req.isEnabled());
-        return userRepo.save(u);
+    public User update(@PathVariable Long id, @Valid @RequestBody UpdateUserReq req) {
+//        User u = userRepo.findById(id).orElseThrow();
+//        u.setUsername(req.getUsername());
+//        u.setPassword(req.getPassword());
+//        u.setPhoneNumber(req.getPhoneNumber());
+        log.info("User's update " + id + ":" + req.toString());
+        return userService.updateUser(id, req);
     }
 
-
-}
+    }

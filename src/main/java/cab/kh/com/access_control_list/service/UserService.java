@@ -2,6 +2,7 @@ package cab.kh.com.access_control_list.service;
 
 
 
+import cab.kh.com.access_control_list.dto.UpdateUserReq;
 import cab.kh.com.access_control_list.model.Role;
 import cab.kh.com.access_control_list.model.User;
 import cab.kh.com.access_control_list.repository.RoleRepo;
@@ -78,6 +79,33 @@ public class UserService {
         for (String key : List.of("READ","WRITE","SHARE","DELETE","MANAGE")) map.put(key, names.contains(key));
         return map;
     }
+
+    public User updateUser(Long userId, UpdateUserReq req) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+
+        if (req.getUsername() != null && !req.getUsername().isBlank() && !req.getUsername().equals(user.getUsername())) {
+            if (userRepo.findByUsername(req.getUsername()).isPresent()) {
+                throw new IllegalArgumentException("Username '" + req.getUsername() + "' is already taken.");
+            }
+            user.setUsername(req.getUsername());
+        }
+
+        // SECURELY update password only if a new one is provided
+        if (req.getPassword() != null && !req.getPassword().isBlank()) {
+            user.setPassword(pe.encode(req.getPassword()));
+        }
+
+        // Update phone number if provided
+        if (req.getPhoneNumber() != null) {
+            user.setPhoneNumber(req.getPhoneNumber());
+        }
+
+        return userRepo.save(user);
+    }
+
+
+
 }
 
 

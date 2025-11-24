@@ -5,11 +5,13 @@ import cab.kh.com.access_control_list.dto.TokenResponse;
 import cab.kh.com.access_control_list.model.User;
 import cab.kh.com.access_control_list.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class AuthController {
             
             // 3) Generate token with ROLES included
             String token = jwt.generateToken(user);
+            log.info("Login token: {}", token);
             return ResponseEntity.ok(new TokenResponse(token));
 
         } catch (AuthenticationException ex) {
