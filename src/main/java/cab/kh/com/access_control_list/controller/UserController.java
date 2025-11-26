@@ -107,7 +107,7 @@ public class UserController {
 //        u.setUsername(req.getUsername());
 //        u.setPassword(req.getPassword());
 //        u.setPhoneNumber(req.getPhoneNumber());
-        log.info("User's update " + id + ":" + req.toString());
+//        log.info("User's update " + id + ":" + req.toString());
         return userService.updateUser(id, req);
     }
 

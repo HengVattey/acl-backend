@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthenticationManager am;
     private final JwtUtil jwt;
     private final UserRepo userRepo;
@@ -29,10 +28,9 @@ public class AuthController {
             // 2) Load full user (so we can include roles inside JWT)
             User user = userRepo.findByUsername(req.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            
             // 3) Generate token with ROLES included
             String token = jwt.generateToken(user);
-            log.info("Login token: {}", token);
+//            log.info("Login token: {}", token);
             return ResponseEntity.ok(new TokenResponse(token));
 
         } catch (AuthenticationException ex) {
@@ -51,7 +49,6 @@ public class AuthController {
                 return ResponseEntity.status(401).body("Invalid or expired token");
             }
             String username = jwt.getUsername(oldToken);
-            // MUST load user again to re-generate token with roles
             User user = userRepo.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 

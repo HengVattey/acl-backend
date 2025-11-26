@@ -34,6 +34,7 @@ public class FeeConfigController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @PostMapping
     public ResponseEntity<FeeConfig> createFee(@Valid @RequestBody FeeConfig feeConfig) {
         FeeConfig savedFee = service.saveFeeConfig(feeConfig);
